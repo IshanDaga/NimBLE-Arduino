@@ -55,7 +55,7 @@
 #endif
 
 #if MYNEWT_VAL(BLE_MESH_SETTINGS)
-#include "config/config.h"
+#include "mesh_config_store/config/config.h"
 #endif
 
 #ifdef __cplusplus
@@ -377,18 +377,20 @@ static inline void net_buf_simple_restore(struct os_mbuf *buf,
       buf->om_len = state->len;
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpointer-arith"
 static inline void sys_memcpy_swap(void *dst, const void *src, size_t length)
 {
     __ASSERT(((src < dst && (src + length) <= dst) ||
           (src > dst && (dst + length) <= src)),
          "Source and destination buffers must not overlap");
-
     src += length - 1;
 
     for (; length > 0; length--) {
         *((uint8_t *)dst++) = *((uint8_t *)src--);
     }
 }
+#pragma GCC diagnostic pop
 
 #define popcount(x) __builtin_popcount(x)
 

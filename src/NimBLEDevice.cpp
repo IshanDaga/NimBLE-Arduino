@@ -76,6 +76,8 @@ NimBLEAdvertising* NimBLEDevice::m_bleAdvertising = nullptr;
 #  endif
 #endif
 
+NimBLEMeshNode*  NimBLEDevice::m_pMeshNode = nullptr;
+
 gap_event_handler           NimBLEDevice::m_customGapHandler = nullptr;
 ble_gap_event_listener      NimBLEDevice::m_listener;
 #if defined( CONFIG_BT_NIMBLE_ROLE_CENTRAL)
@@ -89,6 +91,30 @@ uint8_t                     NimBLEDevice::m_own_addr_type = BLE_OWN_ADDR_PUBLIC;
 uint16_t                    NimBLEDevice::m_scanDuplicateSize = CONFIG_BTDM_SCAN_DUPL_CACHE_SIZE;
 uint8_t                     NimBLEDevice::m_scanFilterMode = CONFIG_BTDM_SCAN_DUPL_TYPE;
 #endif
+
+/**
+ * @brief Create a new mesh node.
+ * @param [in] uuid The uuid to advertise before being provisioned.
+ * @param [in] type A bitmask of the node type to create.
+ * @return A point to new instance of the mesh node.
+ */
+NimBLEMeshNode* NimBLEDevice::createMeshNode(NimBLEUUID uuid, uint8_t type) {
+    if(m_pMeshNode == nullptr) {
+        m_pMeshNode = new NimBLEMeshNode(uuid, type);
+    }
+
+    return m_pMeshNode;
+}
+
+
+/**
+ * @brief Get the mesh node instance.
+ * @return a pointer to the mesh node instance or nullptr if no node exists.
+ */
+NimBLEMeshNode* NimBLEDevice::getMeshNode() {
+    return m_pMeshNode;
+}
+
 
 /**
  * @brief Create a new instance of a server.

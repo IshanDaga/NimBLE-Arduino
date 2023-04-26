@@ -145,6 +145,15 @@
  */
 // #define CONFIG_NIMBLE_STACK_USE_MEM_POOLS 1
 
+/** @brief Un-comment to disable Bluetooth mesh */
+// #define CONFIG_BT_NIMBLE_MESH 0
+
+/** @brief Un-comment to disable persistence of Mesh settings */
+// #define CONFIG_NIMBLE_CPP_PERSIST_MESH_SETTINGS 0
+
+/** @brief Un-comment to change the advertised Mesh name */
+// #define CONFIG_BT_NIMBLE_MESH_DEVICE_NAME "nimble-mesh-node"
+
 /**********************************
  End Arduino user-config
 **********************************/
@@ -252,6 +261,31 @@
 /** @brief Maximum number of connection oriented channels */
 #define CONFIG_BT_NIMBLE_L2CAP_COC_MAX_NUM 0
 
+/* Mesh settings */
+#ifndef CONFIG_BT_NIMBLE_MESH
+#  define CONFIG_BT_NIMBLE_MESH 1
+#endif
+
+#if CONFIG_BT_NIMBLE_MESH
+/** @brief Advertised mesh name */
+#  ifndef CONFIG_BT_NIMBLE_MESH_DEVICE_NAME
+#    define CONFIG_BT_NIMBLE_MESH_DEVICE_NAME "nimble-mesh-node"
+#  endif
+#  define CONFIG_BT_NIMBLE_MESH_PROXY 1
+#  define CONFIG_BT_NIMBLE_MESH_PROV 1
+#  define CONFIG_BT_NIMBLE_MESH_PB_ADV 1
+#  define CONFIG_BT_NIMBLE_MESH_PB_GATT 1
+#  define CONFIG_BT_NIMBLE_MESH_GATT_PROXY 1
+//#  define CONFIG_BT_NIMBLE_MESH_RELAY 1
+//#  define CONFIG_BT_NIMBLE_MESH_LOW_POWER 1
+//#  define CONFIG_BT_NIMBLE_MESH_FRIEND 1
+#  ifndef CONFIG_NIMBLE_CPP_PERSIST_MESH_SETTINGS
+#  define CONFIG_NIMBLE_CPP_PERSIST_MESH_SETTINGS 1
+#  endif
+#  define MYNEWT_VAL_BLE_MESH_SETTINGS CONFIG_NIMBLE_CPP_PERSIST_MESH_SETTINGS
+#endif
+
+/* These should not be altered */
 #define CONFIG_BT_NIMBLE_HS_FLOW_CTRL 1
 #define CONFIG_BT_NIMBLE_HS_FLOW_CTRL_ITVL 1000
 #define CONFIG_BT_NIMBLE_HS_FLOW_CTRL_THRESH 2
