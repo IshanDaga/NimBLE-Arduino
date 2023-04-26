@@ -433,7 +433,7 @@ int NimBLEDevice::getPower(esp_ble_power_type_t powerType) {
         case ESP_PWR_LVL_N6:
             return -6;
         case ESP_PWR_LVL_N3:
-            return -6;
+            return -3;
         case ESP_PWR_LVL_N0:
             return 0;
         case ESP_PWR_LVL_P3:
@@ -828,7 +828,7 @@ void NimBLEDevice::onSync(void)
     }
 #endif
 
-    // Yield for houskeeping before returning to operations.
+    // Yield for housekeeping before returning to operations.
     // Occasionally triggers exception without.
     taskYIELD();
 
@@ -877,7 +877,7 @@ void NimBLEDevice::init(const std::string &deviceName) {
         esp_err_t errRc = ESP_OK;
 
 #ifdef CONFIG_ENABLE_ARDUINO_DEPENDS
-        // make sure the linker includes esp32-hal-bt.c so ardruino init doesn't release BLE memory.
+        // make sure the linker includes esp32-hal-bt.c so Arduino init doesn't release BLE memory.
         btStarted();
 #endif
 
@@ -996,6 +996,15 @@ void NimBLEDevice::deinit(bool clearAll) {
         }
     }
 } // deinit
+
+/**
+ * @brief Set the BLEDevice's name
+ * @param [in] deviceName The device name of the device.
+ */
+/* STATIC */
+void NimBLEDevice::setDeviceName(const std::string &deviceName) {
+    ble_svc_gap_device_name_set(deviceName.c_str());
+} // setDeviceName
 
 
 /**

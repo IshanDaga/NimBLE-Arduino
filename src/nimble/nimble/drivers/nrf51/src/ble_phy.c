@@ -47,6 +47,14 @@
 #error LE Coded PHY cannot be enabled on nRF51
 #endif
 
+#ifndef min
+#define min(a, b) ((a) < (b) ? (a) : (b))
+#endif
+
+#ifndef max
+#define max(a, b) ((a) > (b) ? (a) : (b))
+#endif
+
 /* XXX: 4) Make sure RF is higher priority interrupt than schedule */
 
 /*
@@ -1508,7 +1516,7 @@ ble_phy_resolv_list_disable(void)
 void
 ble_phy_rfclk_enable(void)
 {
-#if MYNEWT
+#if MYNEWT || ARDUINO
     nrf51_clock_hfxo_request();
 #else
     NRF_CLOCK->TASKS_HFCLKSTART = 1;
@@ -1518,7 +1526,7 @@ ble_phy_rfclk_enable(void)
 void
 ble_phy_rfclk_disable(void)
 {
-#if MYNEWT
+#if MYNEWT || ARDUINO
     nrf51_clock_hfxo_release();
 #else
     NRF_CLOCK->TASKS_HFCLKSTOP = 1;

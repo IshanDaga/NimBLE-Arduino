@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
- 
+
  #if defined(ARDUINO_ARCH_NRF5) && defined(NRF52_SERIES)
 
 #include <stdint.h>
@@ -44,6 +44,14 @@
 #if !MYNEWT_VAL_CHOICE(MCU_TARGET, nRF52840) && !MYNEWT_VAL_CHOICE(MCU_TARGET, nRF52811)
 #error LE Coded PHY can only be enabled on nRF52811 or nRF52840
 #endif
+#endif
+
+#ifndef min
+#define min(a, b) ((a) < (b) ? (a) : (b))
+#endif
+
+#ifndef max
+#define max(a, b) ((a) > (b) ? (a) : (b))
 #endif
 
 /*
@@ -2100,7 +2108,7 @@ void ble_phy_disable_dtm(void)
 void
 ble_phy_rfclk_enable(void)
 {
-#if MYNEWT
+#if MYNEWT || ARDUINO
     nrf52_clock_hfxo_request();
 #else
     NRF_CLOCK->TASKS_HFCLKSTART = 1;
@@ -2110,7 +2118,7 @@ ble_phy_rfclk_enable(void)
 void
 ble_phy_rfclk_disable(void)
 {
-#if MYNEWT
+#if MYNEWT || ARDUINO
     nrf52_clock_hfxo_release();
 #else
     NRF_CLOCK->TASKS_HFCLKSTOP = 1;

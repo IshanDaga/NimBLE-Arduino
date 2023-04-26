@@ -29,6 +29,7 @@
 #include "nimble/esp_port/port/include/esp_nimble_mem.h"
 #endif
 
+#if NIMBLE_BLE_CONNECT
 /**
  * ATT server - Attribute Protocol
  *
@@ -1364,7 +1365,7 @@ done:
         *att_err = 0;
 
         /* Fill the response base. */
-        rsp->batp_length = htole16(sizeof(*data) + prev_attr_len);
+        rsp->batp_length = sizeof(*data) + prev_attr_len;
     }
 
     *out_txom = txom;
@@ -2132,7 +2133,9 @@ ble_att_svr_prep_validate(struct ble_att_prep_entry_list *prep_list,
 {
     struct ble_att_prep_entry *entry;
     struct ble_att_prep_entry *prev;
+#if !MYNEWT_VAL(BLE_GATT_BLOB_TRANSFER)
     int cur_len;
+#endif
 
     prev = NULL;
     SLIST_FOREACH(entry, prep_list, bape_next) {
@@ -2152,12 +2155,13 @@ ble_att_svr_prep_validate(struct ble_att_prep_entry_list *prep_list,
             }
         }
 
+#if !MYNEWT_VAL(BLE_GATT_BLOB_TRANSFER)
         cur_len = entry->bape_offset + OS_MBUF_PKTLEN(entry->bape_value);
         if (cur_len > BLE_ATT_ATTR_MAX_LEN) {
             *err_handle = entry->bape_handle;
             return BLE_ATT_ERR_INVALID_ATTR_VALUE_LEN;
         }
-
+#endif
         prev = entry;
     }
 
@@ -2745,3 +2749,5 @@ ble_att_svr_init(void)
 
     return 0;
 }
+
+#endif

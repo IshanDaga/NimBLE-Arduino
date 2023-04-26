@@ -26,12 +26,8 @@
 extern "C" {
 #endif
 
-#ifndef min
-#define min(a, b) ((a)<(b)?(a):(b))
-#endif
-
-#ifndef max
-#define max(a, b) ((a)>(b)?(a):(b))
+#if !defined __cplusplus
+#define static_assert _Static_assert
 #endif
 
 #include "../syscfg/syscfg.h"

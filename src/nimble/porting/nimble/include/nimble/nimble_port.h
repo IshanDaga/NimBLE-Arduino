@@ -23,20 +23,58 @@
 #include "nimble/nimble/include/nimble/nimble_npl.h"
 
 #ifdef ESP_PLATFORM
+#include "esp_err.h"
 #include "nimconfig.h"
 #define NIMBLE_CORE (CONFIG_BT_NIMBLE_PINNED_TO_CORE < portNUM_PROCESSORS ? CONFIG_BT_NIMBLE_PINNED_TO_CORE : tskNO_AFFINITY)
-#define NIMBLE_STACK_SIZE CONFIG_BT_NIMBLE_TASK_STACK_SIZE
+#define NIMBLE_HS_STACK_SIZE CONFIG_BT_NIMBLE_HOST_TASK_STACK_SIZE
 #else
 #include "../syscfg/syscfg.h"
-#define NIMBLE_HS_TASK_STACK_SIZE (CONFIG_BT_NIMBLE_TASK_STACK_SIZE / 4)
+#define NIMBLE_HS_STACK_SIZE (CONFIG_BT_NIMBLE_HOST_TASK_STACK_SIZE / 4)
+#endif
+
+#if (CONFIG_IDF_TARGET_ESP32H2 || CONFIG_IDF_TARGET_ESP32C2)
+#define NIMBLE_LL_STACK_SIZE CONFIG_BT_LE_CONTROLLER_TASK_STACK_SIZE
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#ifdef ESP_PLATFORM
+/**
+* @brief nimble_port_init - Initialize controller and NimBLE host stack
+*
+* @return esp_err_t   - ESP_OK ( if success)
+*                       Error code in case of failure
+*/
+esp_err_t nimble_port_init(void);
+
+/**
+* @brief nimble_port_deinit - Deinitialize controller and NimBLE host stack
+*
+* @return esp_err_t   - ESP_OK ( if success)
+*                       Error code in case of failure
+*/
+esp_err_t nimble_port_deinit(void);
+
+
+/**
+ * @brief esp_nimble_init - Initialize the NimBLE host stack
+ *
+ * @return esp_err_t
+ */
+esp_err_t esp_nimble_init(void);
+
+/**
+ * @brief esp_nimble_deinit - Deinitialize the NimBLE host stack
+ *
+ * @return esp_err_t
+ */
+esp_err_t esp_nimble_deinit(void);
+#else
 void nimble_port_init(void);
 void nimble_port_deinit(void);
+#endif // ESP_PLATFORM
 
 void nimble_port_run(void);
 int nimble_port_stop(void);
